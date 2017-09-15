@@ -1,8 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using CookieEmu.API.Protocol;
+using CookieEmu.Common.Console;
+using CookieEmu.Game.Network;
 
 namespace CookieEmu.Game
 {
@@ -10,6 +9,12 @@ namespace CookieEmu.Game
     {
         static void Main(string[] args)
         {
+            Logger.InitializeLogger("Game");
+            MessageIdentifier.Initialize();
+            GameServer.Start();
+
+            while (true)
+                Console.Read();
         }
     }
 }

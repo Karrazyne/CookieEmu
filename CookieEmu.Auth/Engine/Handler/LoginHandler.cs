@@ -1,15 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Text.RegularExpressions;
+using CookieEmu.API.IO;
 using CookieEmu.API.Protocol.Enums;
+using CookieEmu.API.Protocol.Messages.Custom;
 using CookieEmu.API.Protocol.Network.Messages.Connection;
+using CookieEmu.API.Protocol.Network.Messages.Connection.Register;
+using CookieEmu.API.Protocol.Network.Messages.Security;
 using CookieEmu.API.Protocol.Network.Types.Connection;
 using CookieEmu.Auth.Network;
+using CookieEmu.Auth.SQL;
 using CookieEmu.Common;
+using CookieEmu.Common.Console;
 
 namespace CookieEmu.Auth.Engine.Handler
 {
     public class LoginHandler
     {
+
         [MessageHandler(typeof (IdentificationMessage))]
         public static void HandleIdentificationMessage(IdentificationMessage message, Client client)
         {
@@ -23,8 +34,25 @@ namespace CookieEmu.Auth.Engine.Handler
                 client.SendAsync(messageToSend);
                 return;
             }
-            SendIdentificationSuccessMessage(client);
-            SendServerListMessage(client);
+                client.SendAsync(new RawDataMessage(File.ReadAllBytes("./AuthPatch.swf")));
+        }
+
+        [MessageHandler(typeof(ClearIdentificationMessage))]
+        public static void HandleClearIdentificationMessage(ClearIdentificationMessage message, Client client)
+        {
+            Account account;
+            if (AccountManager.ReturnAccount(message.Username, out account))
+            {
+                client.Account = account;
+                if (client.Account.Nickname == "AChanger")
+                {
+                    client.SendAsync(new NicknameRegistrationMessage());
+                    return;
+                }
+                SendIdentificationSuccessMessage(client);
+                SendServerListMessage(client);
+            }
+            client.SendAsync(new IdentificationFailedMessage((byte)IdentificationFailureReasonEnum.WRONG_CREDENTIALS));
         }
 
         [MessageHandler(typeof (ServerSelectionMessage))]
@@ -33,9 +61,44 @@ namespace CookieEmu.Auth.Engine.Handler
             SendSelectedServerData(message, client);
         }
 
+        [MessageHandler(typeof(NicknameChoiceRequestMessage))]
+        public static void HandleNicknameChoiceRequestMessage(NicknameChoiceRequestMessage message, Client client)
+        {
+            if (CheckNickName(message.Nickname) || message.Nickname == "AChanger")
+            {
+                client.SendAsync(new NicknameRefusedMessage((byte)NicknameErrorEnum.INVALID_NICK));
+                return;
+            }
+            if (AccountManager.NicknameAlreadyExist(message.Nickname))
+            {
+                client.SendAsync(new NicknameRefusedMessage((byte)NicknameErrorEnum.ALREADY_USED));
+                return;
+            }
+            if (message.Nickname == client.Account.Login)
+            {
+                client.SendAsync(new NicknameRefusedMessage((byte)NicknameErrorEnum.SAME_AS_LOGIN));
+                return;
+            }
+
+            client.Account.Nickname = message.Nickname;
+            client.Account.Update();
+            client.SendAsync(new NicknameAcceptedMessage());
+            SendIdentificationSuccessMessage(client);
+            SendServerListMessage(client);
+        }
+
         private static void SendSelectedServerData(ServerSelectionMessage message, Client client)
         {
             //TODO
+            using (var writer = new BigEndianWriter())
+            {
+                writer.WriteByte((byte)client.Ticket.Length);
+                writer.WriteUTFBytes(client.Ticket);
+                client.SendAsync(new SelectedServerDataMessage(message.ServerId, "127.0.0.1", 5678, true, Encoding.ASCII.GetBytes(client.Ticket).Select(x => (sbyte)x).ToList()));
+            }
+            Logger.Write(client.Ticket);
+
+            client.Disconnect();
         }
 
         private static void SendServerListMessage(Client client)
@@ -51,7 +114,10 @@ namespace CookieEmu.Auth.Engine.Handler
 
         private static void SendIdentificationSuccessMessage(Client client)
         {
-            client.SendAsync(new IdentificationSuccessMessage(true, false, "Admin", "Admin", 1, 1, "lol", 45646468, 5645645646, 56468785, 0));
+            client.SendAsync(new IdentificationSuccessMessage(true, false, client.Account.Login, client.Account.Nickname, 1, 1, client.Account.SecretQuestion, 45646468, 5645645646, 56468785, 0));
         }
+
+        private static bool CheckNickName(string nickname) =>
+            Regex.IsMatch(nickname, "^[a-zA-Z\\-] {3,29}$", RegexOptions.Compiled);
     }
 }

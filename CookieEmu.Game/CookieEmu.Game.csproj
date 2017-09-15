@@ -8,9 +8,10 @@
     <OutputType>Exe</OutputType>
     <RootNamespace>CookieEmu.Game</RootNamespace>
     <AssemblyName>CookieEmu.Game</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -42,11 +43,30 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Engine\Handler\Approach\ApproachHandler.cs" />
+    <Compile Include="Engine\Handler\Character\CharacterHandler.cs" />
+    <Compile Include="Engine\Handler\Context\ContextHandler.cs" />
+    <Compile Include="Engine\Handler\MessageHandler.cs" />
+    <Compile Include="Engine\Types\InstanceInfo.cs" />
+    <Compile Include="Engine\Types\MessageInformations.cs" />
+    <Compile Include="Engine\Types\Treatment.cs" />
+    <Compile Include="Network\GameServer.cs" />
+    <Compile Include="Network\Client.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\CookieEmu.API\CookieEmu.API.csproj">
+      <Project>{6F44FBC5-E5AD-4481-B49B-8EBFF6115B73}</Project>
+      <Name>CookieEmu.API</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CookieEmu.Common\CookieEmu.Common.csproj">
+      <Project>{DD93AC73-4B5A-4D2A-9E72-F6BCE9CADD5F}</Project>
+      <Name>CookieEmu.Common</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

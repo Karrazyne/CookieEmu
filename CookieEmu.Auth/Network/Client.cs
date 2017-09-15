@@ -10,6 +10,7 @@ using CookieEmu.API.Protocol;
 using CookieEmu.API.Protocol.Network.Messages.Connection;
 using CookieEmu.API.Protocol.Network.Messages.Handshake;
 using CookieEmu.Auth.Engine.Types;
+using CookieEmu.Auth.SQL;
 using CookieEmu.Common.Console;
 
 namespace CookieEmu.Auth.Network
@@ -20,7 +21,8 @@ namespace CookieEmu.Auth.Network
         public string Ticket { get; set; }
         public string Ip { get; set; }
         public string Port { get; set; }
-        public byte[] AesKey { get; set; }
+
+        public Account Account { get; set; }
 
         private MessageInformations MessageParser { get; set; }
 
@@ -74,8 +76,9 @@ namespace CookieEmu.Auth.Network
 
         public void Log(string content) => Logger.Write(content);
 
-        public void Disconnect()
+        public async void Disconnect()
         {
+            await Task.Delay(1000);
             AuthServer.Clients.Remove(this);
             Logger.Write($"Client {Ip}:{Port} leave...");
             ClientSocket.Shutdown(SocketShutdown.Both);
