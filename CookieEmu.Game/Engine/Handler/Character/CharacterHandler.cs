@@ -91,6 +91,8 @@ namespace CookieEmu.Game.Engine.Handler.Character
 
         private static void SendCharacterListMessage(Client client)
         {
+            client.Account.Characters = CharacterManager.ReturnCharacters(client.Account.Id);
+
             var cbi = new List<CharacterBaseInformations>(client.Account.Characters.Count);
             cbi.AddRange(client.Account.Characters.Select(t => new CharacterBaseInformations
             {
@@ -120,7 +122,6 @@ namespace CookieEmu.Game.Engine.Handler.Character
             var character = new SQL.Character.Character(client.Account.Id, name, 1, 0, (byte)message.Breed, entitylook,
                 message.Sex, breed.SpawnMap, 375, (byte) DirectionsEnum.DIRECTION_SOUTH);
             CharacterManager.CreateCharacter(character);
-            client.Account.Characters = CharacterManager.ReturnCharacters(client.Account.Id);
             client.SendAsync(new CharacterCreationResultMessage((byte)CharacterCreationResultEnum.OK));
             SendCharacterListMessage(client);
         }

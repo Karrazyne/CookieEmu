@@ -37,6 +37,7 @@ namespace CookieEmu.Game.Engine.Manager
                     $"INSERT INTO characters SET OwnerId = '{character.OwnerId}', Name = '{character.Name}', Level = '{character.Level}', Experience = '{character.Experience}'," +
                     $"Breed = '{character.Breed}', EntityLookString = '{character.EntityLookString}', Sex = '{character.Sex}', MapId = '{character.MapId}', CellId = '{character.CellId}', " +
                     $"Direction = '{character.Direction}'");
+                context.SaveChanges();
             }
         }
     }
