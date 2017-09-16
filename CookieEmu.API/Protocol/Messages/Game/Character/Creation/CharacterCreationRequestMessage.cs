@@ -12,13 +12,15 @@
         public sbyte Breed { get; set; }
         public bool Sex { get; set; }
         public ushort CosmeticId { get; set; }
+        public List<int> Colors { get; set; }
 
-        public CharacterCreationRequestMessage(string name, sbyte breed, bool sex, ushort cosmeticId)
+        public CharacterCreationRequestMessage(string name, sbyte breed, bool sex, ushort cosmeticId, List<int> colors)
         {
             Name = name;
             Breed = breed;
             Sex = sex;
             CosmeticId = cosmeticId;
+            Colors = colors;
         }
 
         public CharacterCreationRequestMessage() { }
@@ -28,6 +30,10 @@
             writer.WriteUTF(Name);
             writer.WriteSByte(Breed);
             writer.WriteBoolean(Sex);
+            for (var i = 0; i < 5; i++)
+            {
+                writer.WriteInt(Colors[i]);
+            }
             writer.WriteVarUhShort(CosmeticId);
         }
 
@@ -36,6 +42,11 @@
             Name = reader.ReadUTF();
             Breed = reader.ReadSByte();
             Sex = reader.ReadBoolean();
+            Colors = new List<int>(5);
+            for (var i = 0; i < 5; i++)
+            {
+                Colors.Add(reader.ReadInt());
+            }
             CosmeticId = reader.ReadVarUhShort();
         }
 

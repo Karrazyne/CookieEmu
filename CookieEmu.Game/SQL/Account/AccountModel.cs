@@ -1,10 +1,7 @@
-namespace CookieEmu.Auth.SQL
-{
-    using System;
-    using System.Data.Entity;
-    using System.ComponentModel.DataAnnotations.Schema;
-    using System.Linq;
+﻿using System.Data.Entity;
 
+namespace CookieEmu.Game.SQL.Account
+{
     public partial class AccountModel : DbContext
     {
         public AccountModel()

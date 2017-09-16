@@ -307,6 +307,8 @@
     <Compile Include="Datacenter\world\SuperArea.cs" />
     <Compile Include="Datacenter\world\Waypoint.cs" />
     <Compile Include="Datacenter\world\WorldMap.cs" />
+    <Compile Include="Models\BreedModel.cs" />
+    <Compile Include="Models\HeadModel.cs" />
     <Compile Include="Models\TitleModel.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

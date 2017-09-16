@@ -81,7 +81,7 @@ namespace CookieEmu.Auth.Engine.Handler
             }
 
             client.Account.Nickname = message.Nickname;
-            client.Account.Update();
+            client.Account.UpdateNickname();
             client.SendAsync(new NicknameAcceptedMessage());
             SendIdentificationSuccessMessage(client);
             SendServerListMessage(client);
@@ -90,22 +90,20 @@ namespace CookieEmu.Auth.Engine.Handler
         private static void SendSelectedServerData(ServerSelectionMessage message, Client client)
         {
             //TODO
-            using (var writer = new BigEndianWriter())
-            {
-                writer.WriteByte((byte)client.Ticket.Length);
-                writer.WriteUTFBytes(client.Ticket);
                 client.SendAsync(new SelectedServerDataMessage(message.ServerId, "127.0.0.1", 5678, true, Encoding.ASCII.GetBytes(client.Ticket).Select(x => (sbyte)x).ToList()));
-            }
-            Logger.Write(client.Ticket);
+
+            client.Account.Ticket = client.Ticket;
+            client.Account.UpdateTicket();
 
             client.Disconnect();
         }
 
         private static void SendServerListMessage(Client client)
         {
+            var characterCounts = CharacterManager.ReturnCharacters(client.Account.Id);
             var messageToSend = new ServersListMessage(new List<GameServerInformations>
             {
-                new GameServerInformations(36, 1, (byte) ServerStatusEnum.ONLINE, 1, true, 0, 5,
+                new GameServerInformations(36, 1, (byte) ServerStatusEnum.ONLINE, 1, true, (byte) characterCounts.Count, 5,
                     Functions.ReturnUnixTimeStamp(DateTime.Now))
             }, 0, true);
             client.SendAsync(messageToSend);

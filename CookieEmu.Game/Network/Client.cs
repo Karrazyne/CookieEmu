@@ -6,35 +6,33 @@ using System.Threading.Tasks;
 using CookieEmu.API.Extensions;
 using CookieEmu.API.IO;
 using CookieEmu.API.Protocol;
-using CookieEmu.API.Protocol.Network.Messages.Connection;
 using CookieEmu.API.Protocol.Network.Messages.Game.Approach;
 using CookieEmu.API.Protocol.Network.Messages.Handshake;
 using CookieEmu.Common.Console;
 using CookieEmu.Game.Engine.Types;
+using CookieEmu.Game.SQL.Account;
+using CookieEmu.Game.SQL.Character;
 
 namespace CookieEmu.Game.Network
 {
     public class Client
     {
         public Socket ClientSocket { get; set; }
-        public string Ticket { get; set; }
         public string Ip { get; set; }
         public string Port { get; set; }
-        public byte[] AesKey { get; set; }
+
+        public Account Account { get; set; }
+        public Character Character { get; set; }
 
         private MessageInformations MessageParser { get; set; }
 
         private readonly Random _random = new Random();
-
-        public sbyte[] RsaKey { get; set; }
 
         public Client(Socket s)
         {
             ClientSocket = s;
             Ip = ((IPEndPoint) ClientSocket.RemoteEndPoint).Address.ToString();
             Port = ((IPEndPoint)ClientSocket.RemoteEndPoint).Port.ToString();
-
-            Ticket = _random.RandomString(32);
 
             MessageParser = new MessageInformations(this);
 
@@ -89,13 +87,6 @@ namespace CookieEmu.Game.Network
                     await ClientSocket.SendTask(writer.Data, 0, writer.Data.Length);
                     Log($"[SND] ({message.MessageID}) {message}");
                 }
-        }
-
-        static sbyte[] GenerateRsaPublicKey()
-        {
-            const string publicKeyBase64 = "Vphs/8DzshWGwQ8ydffFVi8YtPqFGOfd3KWydc8ZdUFXhg8Npols4zwIT++s8z+/0Jqn6OI5i68uXgldDGB6zUX5a5RP9r7qgLFh4jYyywtkHeDv3CcPk2vekZkY9eaL+0AO50DUMsW6tyghFebWFyhkEck9CW7oqWVap99uRe/qXwk39LdrkNeFADdAPkO4infbVDQTy8EtozzBro5b9TuZSKiBUvfgUxR3kJ1u66N8IV5dB0guKmord1ZOYzhMokOMezkZ3ISBPltysSLwLFmYdpLfm/TvHaWcsfSmZjlWvtnXWowTssgqkmryVuVYrkB9ezcGIjXuQ7AYbnXXVIQb68VH02DfmPE15cBzqrUskcScH+lwIbuV0Yiy1XGXr4D0HERr7q5h87U5HLkedl8=";
-            
-            return Convert.FromBase64String(publicKeyBase64).Select(entry => (sbyte)entry).ToArray();
         }
     }
 }

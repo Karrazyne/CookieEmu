@@ -33,7 +33,22 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
+    <Reference Include="MySql.Data, Version=6.9.9.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
+      <HintPath>..\packages\MySql.Data.6.9.9\lib\net45\MySql.Data.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="MySql.Data.Entity.EF6, Version=6.9.9.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
+      <HintPath>..\packages\MySql.Data.Entity.6.9.9\lib\net45\MySql.Data.Entity.EF6.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -47,6 +62,8 @@
     <Compile Include="Engine\Handler\Character\CharacterHandler.cs" />
     <Compile Include="Engine\Handler\Context\ContextHandler.cs" />
     <Compile Include="Engine\Handler\MessageHandler.cs" />
+    <Compile Include="Engine\Manager\AccountManager.cs" />
+    <Compile Include="Engine\Manager\CharacterManager.cs" />
     <Compile Include="Engine\Types\InstanceInfo.cs" />
     <Compile Include="Engine\Types\MessageInformations.cs" />
     <Compile Include="Engine\Types\Treatment.cs" />
@@ -54,9 +71,19 @@
     <Compile Include="Network\Client.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SQL\Account\Account.cs" />
+    <Compile Include="SQL\Account\AccountModel.cs" />
+    <Compile Include="SQL\Breeds\Breed.cs" />
+    <Compile Include="SQL\Breeds\BreedModel.cs" />
+    <Compile Include="SQL\Breeds\Head.cs" />
+    <Compile Include="SQL\Breeds\HeadModel.cs" />
+    <Compile Include="SQL\Character\Character.cs" />
+    <Compile Include="SQL\Character\CharacterModel.cs" />
+    <Compile Include="Utils\Helper.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\CookieEmu.API\CookieEmu.API.csproj">
@@ -68,5 +95,6 @@
       <Name>CookieEmu.Common</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -18,8 +18,8 @@ namespace D2OSync
             FastD2IReader.Instance.Init(@"D:\Dofus 2.43\app\data\i18n\i18n_fr.d2i");
             DatabaseManager.Connect("127.0.0.1", "root", "", "cookieemu");
             //GenerateTitle();
-            GenerateBreed();
-
+            //GenerateBreed();
+            GenerateHead();
             Console.Read();
         }
 
@@ -39,9 +39,22 @@ namespace D2OSync
         {
             var data = new D2oReader(@"D:\Dofus 2.43\app\data\common\Breeds.d2o");
             var breeds = data.ReadObjects<Breed>();
-            foreach (var shit in breeds.Values)
-            {
-            }
+            var tempBreeds = breeds.Values.Select(x => new BreedModel(x)).ToList();
+
+            data = null;
+            breeds = null;
+            tempBreeds = null;
+        }
+
+        private static void GenerateHead()
+        {
+            var data = new D2oReader(@"D:\Dofus 2.43\app\data\common\Heads.d2o");
+            var heads = data.ReadObjects<Head>();
+            var tempHead = heads.Values.Select(x => new HeadModel(x)).ToList();
+
+            data = null;
+            heads = null;
+            tempHead = null;
         }
     }
-}
+    }

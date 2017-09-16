@@ -19,6 +19,7 @@ using CookieEmu.API.Protocol.Network.Types.Game.Interactive;
 using CookieEmu.API.Protocol.Network.Types.Game.Look;
 using CookieEmu.Common;
 using CookieEmu.Game.Network;
+using CookieEmu.Game.Utils;
 
 namespace CookieEmu.Game.Engine.Handler.Context
 {
@@ -76,15 +77,13 @@ namespace CookieEmu.Game.Engine.Handler.Context
         public static void HandleMapInformationsRequestMessage(MapInformationsRequestMessage message, Client client)
         {
             client.SendAsync(new MapComplementaryInformationsDataMessage(278, 84674563, new List<HouseInformations>(),
-                new List<GameRolePlayActorInformations>()
+                new List<GameRolePlayActorInformations>
                 {
                     new GameRolePlayActorInformations
                     {
-                        ContextualId = 1,
-                        Disposition = new EntityDispositionInformations(380, 1),
-                        Look = new EntityLook(1, new List<ushort> {90, 2146, 239, 119, 462, 590},
-                            new List<int> {24986395, 42110404, 52372804, 73427089, 88826319}, new List<short> {140},
-                            new List<SubEntity>())
+                        ContextualId = client.Character.Id,
+                        Disposition = new EntityDispositionInformations(client.Character.CellId, (byte)client.Character.Direction),
+                        Look = Helper.EntityLookBuilder(client.Character)
                     }
 
                 }, new List<InteractiveElement>(), new List<StatedElement>(),
@@ -94,11 +93,9 @@ namespace CookieEmu.Game.Engine.Handler.Context
             {
                 Informations = new GameRolePlayActorInformations()
                 {
-                    ContextualId = 1,
-                    Disposition = new EntityDispositionInformations(250, 1),
-                    Look = new EntityLook(1, new List<ushort> {90, 2146, 239, 119, 462, 590},
-                        new List<int> {24986395, 42110404, 52372804, 73427089, 88826319}, new List<short> {140},
-                        new List<SubEntity>())
+                    ContextualId = client.Character.Id,
+                    Disposition = new EntityDispositionInformations(client.Character.CellId, (byte)client.Character.Direction),
+                    Look = Helper.EntityLookBuilder(client.Character)
                 }
             };
             client.SendAsync(toSend);

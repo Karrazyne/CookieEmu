@@ -1,10 +1,7 @@
 namespace CookieEmu.Auth.SQL
 {
-    using System;
-    using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
-    using System.Data.Entity.Spatial;
 
     [Table("cookieemu.accounts")]
     public partial class Account
@@ -20,16 +17,26 @@ namespace CookieEmu.Auth.SQL
         public string Password { get; set; }
 
         [Required]
+        [StringLength(255)]
+        public string Ticket { get; set; }
+
+        [Required]
         public string SecretQuestion { get; set; }
 
         [Required]
         [StringLength(255)]
         public string Nickname { get; set; }
 
-        public void Update()
+        public void UpdateNickname()
         {
             using (var context = new AccountModel())
                 context.Database.ExecuteSqlCommand($"UPDATE accounts SET Nickname = '{Nickname}' WHERE Id = {Id}");
+        }
+
+        public void UpdateTicket()
+        {
+            using (var context = new AccountModel())
+                context.Database.ExecuteSqlCommand($"UPDATE accounts SET Ticket = '{Ticket}' WHERE Id = {Id}");
         }
 
         
