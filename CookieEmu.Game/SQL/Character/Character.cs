@@ -61,10 +61,5 @@ namespace CookieEmu.Game.SQL.Character
             CellId = cellid;
             Direction = direction;
         }
-
-        public void Create()
-        {
-            
-        }
     }
 }
