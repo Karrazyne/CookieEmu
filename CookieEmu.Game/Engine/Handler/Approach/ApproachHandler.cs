@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using CookieEmu.API.Protocol.Enums;
 using CookieEmu.API.Protocol.Messages.Custom;
+using CookieEmu.API.Protocol.Network.Messages.Authorized;
 using CookieEmu.API.Protocol.Network.Messages.Game.Approach;
 using CookieEmu.API.Protocol.Network.Messages.Game.Basic;
 using CookieEmu.API.Protocol.Network.Messages.Secure;
@@ -76,6 +77,19 @@ namespace CookieEmu.Game.Engine.Handler.Approach
 
             client.SendAsync(new AccountCapabilitiesMessage(true, true, client.Account.Id, flags, flags, 5));
             client.SendAsync(new TrustStatusMessage(true, true));
+        }
+
+        [MessageHandler(typeof(AdminQuietCommandMessage))]
+        public static void HandleAdminQuietCommandMessage(AdminQuietCommandMessage message, Client client)
+        {
+            var dest = message.Content.Replace("moveto","").Trim();
+            int mapId;
+            if (int.TryParse(dest, out mapId))
+            {
+                MapManager.ChangeMap(client, mapId);
+            }
+            else
+                Console.WriteLine(message.Content);
         }
     }
 }

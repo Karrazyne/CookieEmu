@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 using CookieEmu.API.Protocol.Enums;
 using CookieEmu.API.Protocol.Network.Messages.Game.Basic;
 using CookieEmu.API.Protocol.Network.Messages.Game.Character.Stats;
@@ -16,8 +13,8 @@ using CookieEmu.API.Protocol.Network.Types.Game.Context.Fight;
 using CookieEmu.API.Protocol.Network.Types.Game.Context.Roleplay;
 using CookieEmu.API.Protocol.Network.Types.Game.House;
 using CookieEmu.API.Protocol.Network.Types.Game.Interactive;
-using CookieEmu.API.Protocol.Network.Types.Game.Look;
 using CookieEmu.Common;
+using CookieEmu.Game.Engine.Manager;
 using CookieEmu.Game.Network;
 using CookieEmu.Game.Utils;
 
@@ -33,7 +30,7 @@ namespace CookieEmu.Game.Engine.Handler.Context
             client.SendAsync(new GameContextDestroyMessage());
             client.SendAsync(new GameContextCreateMessage((byte)GameContextEnum.ROLE_PLAY));
             client.SendAsync(new LifePointsRegenBeginMessage(5));
-            client.SendAsync(new CurrentMapMessage(84674563, MapKey));
+            //client.SendAsync(new CurrentMapMessage(client.Character.MapId, MapKey));
             client.SendAsync(new BasicTimeMessage(Functions.ReturnUnixTimeStamp(DateTime.Now), 60));
             client.SendAsync(new CharacterStatsListMessage(new CharacterCharacteristicsInformations(1, 2, 3, 4,
                 1000000000, 0, 0, 0, new ActorExtendedAlignmentInformations(0, 0, 0, 0), 5000, 5000, 10000, 10000, 12,
@@ -71,34 +68,66 @@ namespace CookieEmu.Game.Engine.Handler.Context
                 new CharacterBaseCharacteristic(1, 1, 1, 1, 1), new CharacterBaseCharacteristic(1, 1, 1, 1, 1),
                 new CharacterBaseCharacteristic(1, 1, 1, 1, 1), new CharacterBaseCharacteristic(1, 1, 1, 1, 1),
                 new CharacterBaseCharacteristic(1, 1, 1, 1, 1), new List<CharacterSpellModification>(), 0)));
+            MapManager.ChangeMap(client, client.Character.MapId);
         }
 
         [MessageHandler(typeof(MapInformationsRequestMessage))]
         public static void HandleMapInformationsRequestMessage(MapInformationsRequestMessage message, Client client)
         {
-            client.SendAsync(new MapComplementaryInformationsDataMessage(278, 84674563, new List<HouseInformations>(),
-                new List<GameRolePlayActorInformations>
-                {
-                    new GameRolePlayActorInformations
-                    {
-                        ContextualId = client.Character.Id,
-                        Disposition = new EntityDispositionInformations(client.Character.CellId, (byte)client.Character.Direction),
-                        Look = Helper.EntityLookBuilder(client.Character)
-                    }
-
-                }, new List<InteractiveElement>(), new List<StatedElement>(),
+            client.SendAsync(new MapComplementaryInformationsDataMessage((ushort) client.CurrentMap.SubAreaId,
+                client.Character.MapId, new List<HouseInformations>(), /*client.CurrentMap.GetActorInformations()*/
+                new List<GameRolePlayActorInformations>(), 
+                new List<InteractiveElement>(), new List<StatedElement>(),
                 new List<MapObstacle>(), new List<FightCommonInformations>(), false,
-                new FightStartingPositions(new List<ushort>(), new List<ushort>())));
-            var toSend = new GameRolePlayShowActorMessage
+                new FightStartingPositions(client.CurrentMap.BluePlacement, client.CurrentMap.RedPlacement)));
+        }
+
+        [MessageHandler(typeof(GameMapMovementRequestMessage))]
+        public static void HandleGameMapMovementRequestMessage(GameMapMovementRequestMessage message, Client client)
+        {
+            client.Character.CellId = (short) (message.KeyMovements.Last() & 4095);
+            client.Character.Direction = (byte) (message.KeyMovements.Last() >> 12);
+            client.CurrentMap.Send(new GameMapMovementMessage(message.KeyMovements, client.Character.Direction, client.Character.Id));
+            client.CurrentMap.Send(new GameContextRefreshEntityLookMessage(client.Character.Id, Helper.EntityLookBuilder(client.Character)));
+            client.CurrentMap.RefreshActor();
+        }
+
+        [MessageHandler(typeof(GameMapChangeOrientationRequestMessage))]
+        public static void HandleGameMapChangeOrientationRequestMessage(GameMapChangeOrientationRequestMessage message,
+            Client client)
+        {
+            client.Character.Direction = message.Direction;
+            client.CurrentMap.Send(
+                new GameMapChangeOrientationMessage(new ActorOrientation(client.Character.Id, message.Direction)));
+            client.CurrentMap.Send(new GameContextRefreshEntityLookMessage(client.Character.Id,
+                Helper.EntityLookBuilder(client.Character)));
+            client.CurrentMap.RefreshActor();
+        }
+
+        [MessageHandler(typeof(ChangeMapMessage))]
+        public static void HandleChangeMapMessage(ChangeMapMessage message, Client client)
+        {
+            var cell = client.Character.CellId;
+            if (client.CurrentMap.TopNeighbourId == message.MapId)
+                cell += 532;
+            if (client.CurrentMap.BottomNeighbourId == message.MapId)
+                cell -= 532;
+            if (client.CurrentMap.LeftNeighbourId == message.MapId)
+                cell += 13;
+            if (client.CurrentMap.RightNeighbourId == message.MapId)
+                cell -= 13;
+
+            if (cell != client.Character.CellId)
             {
-                Informations = new GameRolePlayActorInformations()
-                {
-                    ContextualId = client.Character.Id,
-                    Disposition = new EntityDispositionInformations(client.Character.CellId, (byte)client.Character.Direction),
-                    Look = Helper.EntityLookBuilder(client.Character)
-                }
-            };
-            client.SendAsync(toSend);
+                client.Character.CellId = cell;
+                MapManager.ChangeMap(client, message.MapId);
+            }
+        }
+
+        [MessageHandler(typeof(GameMapMovementCancelMessage))]
+        public static void HandleGameMapMovementCancelMessage(GameMapMovementCancelMessage message, Client client)
+        {
+            client.SendAsync(new BasicNoOperationMessage());
         }
     }
 }

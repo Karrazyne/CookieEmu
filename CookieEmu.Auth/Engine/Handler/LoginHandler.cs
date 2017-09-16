@@ -41,7 +41,7 @@ namespace CookieEmu.Auth.Engine.Handler
         public static void HandleClearIdentificationMessage(ClearIdentificationMessage message, Client client)
         {
             Account account;
-            if (AccountManager.ReturnAccount(message.Username, out account))
+            if (AccountManager.ReturnAccount(message.Username, message.Password, out account))
             {
                 client.Account = account;
                 if (client.Account.Nickname == "AChanger")

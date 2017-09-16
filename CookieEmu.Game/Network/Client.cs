@@ -10,6 +10,7 @@ using CookieEmu.API.Protocol.Network.Messages.Game.Approach;
 using CookieEmu.API.Protocol.Network.Messages.Handshake;
 using CookieEmu.Common.Console;
 using CookieEmu.Game.Engine.Types;
+using CookieEmu.Game.Game.Maps;
 using CookieEmu.Game.SQL.Account;
 using CookieEmu.Game.SQL.Character;
 
@@ -23,6 +24,7 @@ namespace CookieEmu.Game.Network
 
         public Account Account { get; set; }
         public Character Character { get; set; }
+        public Map CurrentMap { get; set; }
 
         private MessageInformations MessageParser { get; set; }
 

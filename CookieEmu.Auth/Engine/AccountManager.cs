@@ -5,12 +5,12 @@ namespace CookieEmu.Auth.Engine
 {
     public class AccountManager
     {
-        public static bool ReturnAccount(string username, out Account account)
+        public static bool ReturnAccount(string username, string password, out Account account)
         {
             using (var context = new AccountModel())
             {
                 account = (from a in context.accounts
-                    where a.Login == username
+                    where a.Login == username && a.Password == password
                     select a).FirstOrDefault();
                 return account != null;
             }

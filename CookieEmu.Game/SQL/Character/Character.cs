@@ -5,6 +5,12 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using CookieEmu.API.Protocol.Enums;
+using CookieEmu.API.Protocol.Network.Types.Game.Character.Alignment;
+using CookieEmu.API.Protocol.Network.Types.Game.Character.Restriction;
+using CookieEmu.API.Protocol.Network.Types.Game.Context;
+using CookieEmu.API.Protocol.Network.Types.Game.Context.Roleplay;
+using CookieEmu.Game.Utils;
 
 namespace CookieEmu.Game.SQL.Character
 {
@@ -60,6 +66,37 @@ namespace CookieEmu.Game.SQL.Character
             MapId = mapid;
             CellId = cellid;
             Direction = direction;
+        }
+
+        public GameRolePlayCharacterInformations GetGameRolePlayCharacterInformations()
+        {
+            var toRet = new GameRolePlayCharacterInformations
+            {
+                Name = Name,
+                Look = Helper.EntityLookBuilder(this),
+                Disposition = new EntityDispositionInformations(CellId, Direction),
+                ContextualId = (double) Id,
+                AccountId = OwnerId,
+                AlignmentInfos = new ActorExtendedAlignmentInformations
+                {
+                    Aggressable = 0,
+                    AlignmentGrade = 0,
+                    AlignmentSide = (sbyte) AlignmentSideEnum.ALIGNMENT_NEUTRAL,
+                    AlignmentValue = 0,
+                    CharacterPower = 0,
+                    Honor = 0,
+                    HonorGradeFloor = 0,
+                    HonorNextGradeFloor = 0
+                },
+                HumanoidInfo = new HumanInformations
+                {
+                    Sex = Sex == 1,
+                    Options = new List<HumanOption>(),
+                    Restrictions = new ActorRestrictionsInformations(false, false, false, false, false, false, false, false,
+                        false, false, false, false, false, false, false, false, false, false, false, false, false)
+                }
+            };
+            return toRet;
         }
     }
 }
