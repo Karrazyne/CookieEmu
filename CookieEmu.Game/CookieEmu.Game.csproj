@@ -60,10 +60,13 @@
   <ItemGroup>
     <Compile Include="Engine\Handler\Approach\ApproachHandler.cs" />
     <Compile Include="Engine\Handler\Character\CharacterHandler.cs" />
+    <Compile Include="Engine\Handler\Chat\ChatHandler.cs" />
     <Compile Include="Engine\Handler\Context\ContextHandler.cs" />
     <Compile Include="Engine\Handler\MessageHandler.cs" />
+    <Compile Include="Engine\Handler\Social\SocialHandler.cs" />
     <Compile Include="Engine\Manager\AccountManager.cs" />
     <Compile Include="Engine\Manager\CharacterManager.cs" />
+    <Compile Include="Engine\Manager\InteractiveManager.cs" />
     <Compile Include="Engine\Manager\MapManager.cs" />
     <Compile Include="Engine\Types\InstanceInfo.cs" />
     <Compile Include="Engine\Types\MessageInformations.cs" />
@@ -81,6 +84,8 @@
     <Compile Include="SQL\Breeds\HeadModel.cs" />
     <Compile Include="SQL\Character\Character.cs" />
     <Compile Include="SQL\Character\CharacterModel.cs" />
+    <Compile Include="SQL\Interactive\Interactive.cs" />
+    <Compile Include="SQL\Interactive\InteractiveModel.cs" />
     <Compile Include="SQL\Map\Map.cs" />
     <Compile Include="SQL\Map\MapModel.cs" />
     <Compile Include="Utils\Helper.cs" />

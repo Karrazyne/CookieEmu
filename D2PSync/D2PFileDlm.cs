@@ -6,6 +6,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using CookieEmu.API.IO;
 using D2PSync.Data;
+using D2PSync.Data.Elements;
 using D2PSync.Database;
 using D2PSync.Utils;
 
@@ -86,8 +87,29 @@ namespace D2PSync
                 Array.Clear(tempData, 0, tempData.Length);
                 var data = new MapInfos(tempMap);
                 data.SetMap();
-                DatabaseManager.ExecuteNonQuery(data.GenerateQuery());
-                Console.WriteLine($"({Constants.MapCounter++}) Map -> {data.MapId} successfuly imported.");
+                //DatabaseManager.ExecuteNonQuery(data.GenerateQuery());
+
+                foreach (var layer in tempMap.Layers)
+                {
+                    foreach (var cell in layer.Cells)
+                    {
+                        foreach (var element in cell.Elements)
+                        {
+                            if (element is GraphicalElement graphical)
+                            {
+                                if (DatabaseManager.Identifiers.Contains((uint)graphical.ElementId))
+                                {
+                                    DatabaseManager.ExecuteNonQuery(
+                                        $"INSERT INTO map_interactives SET ElementId = '{graphical.Identifier}', ElementTypeId = '32', SkillId = '38', MapId = '{tempMap.Id}', CellId = '{cell.CellId}'");
+                                    
+                                    Console.WriteLine($"add {graphical.Identifier} on {tempMap.Id} / {cell.CellId}");
+                                }
+                            }
+                        }
+                    }
+                }
+
+                //Console.WriteLine($"({Constants.MapCounter++}) Map -> {data.MapId} successfuly imported.");
             }
         }
     }

@@ -58,8 +58,8 @@ namespace CookieEmu.Game.Game.Maps
         public void RemoveClient(Client client)
         {
             if (!_clients.Contains(client)) return;
-            Send(new GameContextRemoveElementMessage(client.Character.Id));
             _clients.Remove(client);
+            Send(new GameContextRemoveElementMessage(client.Character.Id));
         }
 
         public void Send(NetworkMessage message)
@@ -67,9 +67,19 @@ namespace CookieEmu.Game.Game.Maps
             _clients.ForEach(x => x.SendAsync(message));
         }
 
-        public List<GameRolePlayActorInformations> GetActorInformations()
+        public List<GameRolePlayCharacterInformations> GetActorInformations()
         {
-            return _clients.Select(actor => actor.Character.GetGameRolePlayCharacterInformations()).Cast<GameRolePlayActorInformations>().ToList();
+            return _clients.Select(actor => actor.Character.GetGameRolePlayCharacterInformations()).ToList();
+        }
+
+        public List<GameRolePlayActorInformations> GetGameRolePlayActorInformationses()
+        {
+            var toRet = new List<GameRolePlayActorInformations>();
+            foreach (var client in _clients)
+            {
+                toRet.Add(client.Character.GetGameRolePlayCharacterInformations());
+            }
+            return toRet;
         }
 
         public void RefreshActor() => _clients.ForEach(

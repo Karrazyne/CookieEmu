@@ -93,7 +93,7 @@ namespace CookieEmu.Game.SQL.Character
                     Sex = Sex == 1,
                     Options = new List<HumanOption>(),
                     Restrictions = new ActorRestrictionsInformations(false, false, false, false, false, false, false, false,
-                        false, false, false, false, false, false, false, false, false, false, false, false, false)
+                        false, false, false, true, false, false, false, false, false, false, false, false, false)
                 }
             };
             return toRet;

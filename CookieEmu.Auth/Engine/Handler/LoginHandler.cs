@@ -51,6 +51,7 @@ namespace CookieEmu.Auth.Engine.Handler
                 }
                 SendIdentificationSuccessMessage(client);
                 SendServerListMessage(client);
+                return;
             }
             client.SendAsync(new IdentificationFailedMessage((byte)IdentificationFailureReasonEnum.WRONG_CREDENTIALS));
         }

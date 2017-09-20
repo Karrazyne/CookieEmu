@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26730.8
+VisualStudioVersion = 15.0.26730.15
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CookieEmu.Auth", "CookieEmu.Auth\CookieEmu.Auth.csproj", "{E0F2FEEC-D20C-4413-905A-4BA805716201}"
 EndProject
@@ -16,6 +16,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "D2PSync", "D2PSync\D2PSync.csproj", "{0C230480-3359-406B-99FC-858FB57B3F3A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "D2OSync", "D2OSync\D2OSync.csproj", "{1B1B8184-C7C7-4045-868E-A6F3E0F26076}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EleReader", "EleReader\EleReader.csproj", "{47DD85DC-A800-4863-94DB-14ED3514F2B2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -47,6 +49,10 @@ Global
 		{1B1B8184-C7C7-4045-868E-A6F3E0F26076}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1B1B8184-C7C7-4045-868E-A6F3E0F26076}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1B1B8184-C7C7-4045-868E-A6F3E0F26076}.Release|Any CPU.Build.0 = Release|Any CPU
+		{47DD85DC-A800-4863-94DB-14ED3514F2B2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{47DD85DC-A800-4863-94DB-14ED3514F2B2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{47DD85DC-A800-4863-94DB-14ED3514F2B2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{47DD85DC-A800-4863-94DB-14ED3514F2B2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -54,6 +60,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{0C230480-3359-406B-99FC-858FB57B3F3A} = {BDDDFCFF-B856-4604-B4CE-D69BAF85C3E6}
 		{1B1B8184-C7C7-4045-868E-A6F3E0F26076} = {BDDDFCFF-B856-4604-B4CE-D69BAF85C3E6}
+		{47DD85DC-A800-4863-94DB-14ED3514F2B2} = {BDDDFCFF-B856-4604-B4CE-D69BAF85C3E6}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A72A103A-47F9-4517-8DB7-742898449F14}

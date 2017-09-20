@@ -60,6 +60,10 @@
     <Compile Include="IO\Types\Binary64.cs" />
     <Compile Include="IO\Types\CustomInt64.cs" />
     <Compile Include="IO\Types\CustomUInt64.cs" />
+    <Compile Include="Pathfinding\MapMovementAdapter.cs" />
+    <Compile Include="Pathfinding\Positions\MapPoint.cs" />
+    <Compile Include="Pathfinding\Positions\MovementPath.cs" />
+    <Compile Include="Pathfinding\Positions\PathElement.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Protocol\Enums\AccessoryPreviewErrorEnum.cs" />
     <Compile Include="Protocol\Enums\AggressableStatusEnum.cs" />

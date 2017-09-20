@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using CookieEmu.API.Pathfinding;
+using CookieEmu.API.Pathfinding.Positions;
 using CookieEmu.API.Protocol.Enums;
 using CookieEmu.API.Protocol.Network.Messages.Game.Basic;
 using CookieEmu.API.Protocol.Network.Messages.Game.Character.Stats;
@@ -30,8 +32,9 @@ namespace CookieEmu.Game.Engine.Handler.Context
             client.SendAsync(new GameContextDestroyMessage());
             client.SendAsync(new GameContextCreateMessage((byte)GameContextEnum.ROLE_PLAY));
             client.SendAsync(new LifePointsRegenBeginMessage(5));
+            MapManager.ChangeMap(client, client.Character.MapId);
             //client.SendAsync(new CurrentMapMessage(client.Character.MapId, MapKey));
-            client.SendAsync(new BasicTimeMessage(Functions.ReturnUnixTimeStamp(DateTime.Now), 60));
+            
             client.SendAsync(new CharacterStatsListMessage(new CharacterCharacteristicsInformations(1, 2, 3, 4,
                 1000000000, 0, 0, 0, new ActorExtendedAlignmentInformations(0, 0, 0, 0), 5000, 5000, 10000, 10000, 12,
                 6, new CharacterBaseCharacteristic(1, 1, 1, 1, 1), new CharacterBaseCharacteristic(1, 1, 1, 1, 1),
@@ -68,18 +71,19 @@ namespace CookieEmu.Game.Engine.Handler.Context
                 new CharacterBaseCharacteristic(1, 1, 1, 1, 1), new CharacterBaseCharacteristic(1, 1, 1, 1, 1),
                 new CharacterBaseCharacteristic(1, 1, 1, 1, 1), new CharacterBaseCharacteristic(1, 1, 1, 1, 1),
                 new CharacterBaseCharacteristic(1, 1, 1, 1, 1), new List<CharacterSpellModification>(), 0)));
-            MapManager.ChangeMap(client, client.Character.MapId);
+            
         }
 
         [MessageHandler(typeof(MapInformationsRequestMessage))]
         public static void HandleMapInformationsRequestMessage(MapInformationsRequestMessage message, Client client)
         {
+            client.Character.MapId = message.MapId;
             client.SendAsync(new MapComplementaryInformationsDataMessage((ushort) client.CurrentMap.SubAreaId,
-                client.Character.MapId, new List<HouseInformations>(), /*client.CurrentMap.GetActorInformations()*/
-                new List<GameRolePlayActorInformations>(), 
-                new List<InteractiveElement>(), new List<StatedElement>(),
+                message.MapId, new List<HouseInformations>(), new List<GameRolePlayActorInformations>(), 
+                InteractiveManager.GetInteractives(message.MapId), InteractiveManager.GetStatedElements(message.MapId),
                 new List<MapObstacle>(), new List<FightCommonInformations>(), false,
                 new FightStartingPositions(client.CurrentMap.BluePlacement, client.CurrentMap.RedPlacement)));
+
         }
 
         [MessageHandler(typeof(GameMapMovementRequestMessage))]
@@ -87,7 +91,10 @@ namespace CookieEmu.Game.Engine.Handler.Context
         {
             client.Character.CellId = (short) (message.KeyMovements.Last() & 4095);
             client.Character.Direction = (byte) (message.KeyMovements.Last() >> 12);
-            client.CurrentMap.Send(new GameMapMovementMessage(message.KeyMovements, client.Character.Direction, client.Character.Id));
+            var movements = from key in message.KeyMovements
+                let cellId = key & 4095
+                select cellId;
+            client.CurrentMap.Send(new GameMapMovementMessage(movements.Select(x => (short)x).ToList(), client.Character.Direction, client.Character.Id));
             client.CurrentMap.Send(new GameContextRefreshEntityLookMessage(client.Character.Id, Helper.EntityLookBuilder(client.Character)));
             client.CurrentMap.RefreshActor();
         }

@@ -33,10 +33,7 @@ namespace CookieEmu.Game.Engine.Manager
         {
             using (var context = new CharacterModel())
             {
-                context.Database.ExecuteSqlCommand(
-                    $"INSERT INTO characters SET OwnerId = '{character.OwnerId}', Name = '{character.Name}', Level = '{character.Level}', Experience = '{character.Experience}'," +
-                    $"Breed = '{character.Breed}', EntityLookString = '{character.EntityLookString}', Sex = '{character.Sex}', MapId = '{character.MapId}', CellId = '{character.CellId}', " +
-                    $"Direction = '{character.Direction}'");
+                context.characters.Add(character);
                 context.SaveChanges();
             }
         }
