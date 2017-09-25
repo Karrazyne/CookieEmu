@@ -73,12 +73,12 @@ namespace D2PSync
             {
                 var tempData = ReadFile(map.Key);
                 if (tempData == null) continue;
-                var stream = new MemoryStream(tempData) {Position = 2};
+                var stream = new MemoryStream(tempData) { Position = 2 };
                 var stream2 = new DeflateStream(stream, CompressionMode.Decompress);
                 var buffer = new byte[8192];
                 var destination = new MemoryStream();
                 int read;
-                while((read = stream2.Read(buffer, 0, buffer.Length)) > 0)
+                while ((read = stream2.Read(buffer, 0, buffer.Length)) > 0)
                     destination.Write(buffer, 0, read);
                 destination.Position = 0;
                 var reader = new BigEndianReader(destination);
@@ -89,27 +89,116 @@ namespace D2PSync
                 data.SetMap();
                 //DatabaseManager.ExecuteNonQuery(data.GenerateQuery());
 
-                foreach (var layer in tempMap.Layers)
+                GetQuery(tempMap);
+
+                //Console.WriteLine($"({Constants.MapCounter++}) Map -> {data.MapId} successfuly imported.");
+            }
+        }
+
+        private static void GetQuery(Map tempMap)
+        {
+            foreach (var layer in tempMap.Layers)
+            {
+                foreach (var cell in layer.Cells)
                 {
-                    foreach (var cell in layer.Cells)
+                    foreach (var element in cell.Elements)
                     {
-                        foreach (var element in cell.Elements)
+                        if (element is GraphicalElement graphical)
                         {
-                            if (element is GraphicalElement graphical)
+                            if (DatabaseManager.OrmeIdentifier.Contains((uint)graphical.ElementId))
                             {
-                                if (DatabaseManager.Identifiers.Contains((uint)graphical.ElementId))
-                                {
-                                    DatabaseManager.ExecuteNonQuery(
-                                        $"INSERT INTO map_interactives SET ElementId = '{graphical.Identifier}', ElementTypeId = '32', SkillId = '38', MapId = '{tempMap.Id}', CellId = '{cell.CellId}'");
-                                    
-                                    Console.WriteLine($"add {graphical.Identifier} on {tempMap.Id} / {cell.CellId}");
-                                }
+                                DatabaseManager.ExecuteNonQuery(
+                                    $"INSERT INTO map_interactives SET ElementId = '{graphical.Identifier}', ElementTypeId = '30', SkillId = '35', MapId = '{tempMap.Id}', CellId = '{cell.CellId}'");
+
+                                Console.WriteLine($"add Orme {graphical.Identifier} on {tempMap.Id} / {cell.CellId}");
+                            }
+                            else if (DatabaseManager.OrgeIdentifier.Contains((uint)graphical.ElementId))
+                            {
+                                DatabaseManager.ExecuteNonQuery(
+                                    $"INSERT INTO map_interactives SET ElementId = '{graphical.Identifier}', ElementTypeId = '43', SkillId = '53', MapId = '{tempMap.Id}', CellId = '{cell.CellId}'");
+
+                                Console.WriteLine($"add Orge {graphical.Identifier} on {tempMap.Id} / {cell.CellId}");
+                            }
+                            else if (DatabaseManager.AvoineIdentifier.Contains((uint)graphical.ElementId))
+                            {
+                                DatabaseManager.ExecuteNonQuery(
+                                    $"INSERT INTO map_interactives SET ElementId = '{graphical.Identifier}', ElementTypeId = '45', SkillId = '57', MapId = '{tempMap.Id}', CellId = '{cell.CellId}'");
+
+                                Console.WriteLine($"add Avoine {graphical.Identifier} on {tempMap.Id} / {cell.CellId}");
+                            }
+                            else if (DatabaseManager.ChanvreIdentifier.Contains((uint)graphical.ElementId))
+                            {
+                                DatabaseManager.ExecuteNonQuery(
+                                    $"INSERT INTO map_interactives SET ElementId = '{graphical.Identifier}', ElementTypeId = '46', SkillId = '54', MapId = '{tempMap.Id}', CellId = '{cell.CellId}'");
+
+                                Console.WriteLine($"add Chanvre {graphical.Identifier} on {tempMap.Id} / {cell.CellId}");
+                            }
+                            else if (DatabaseManager.SeigleIdentifier.Contains((uint)graphical.ElementId))
+                            {
+                                DatabaseManager.ExecuteNonQuery(
+                                    $"INSERT INTO map_interactives SET ElementId = '{graphical.Identifier}', ElementTypeId = '44', SkillId = '52', MapId = '{tempMap.Id}', CellId = '{cell.CellId}'");
+
+                                Console.WriteLine($"add Seigle {graphical.Identifier} on {tempMap.Id} / {cell.CellId}");
+                            }
+                            else if (DatabaseManager.MaltIdentifier.Contains((uint)graphical.ElementId))
+                            {
+                                DatabaseManager.ExecuteNonQuery(
+                                    $"INSERT INTO map_interactives SET ElementId = '{graphical.Identifier}', ElementTypeId = '47', SkillId = '58', MapId = '{tempMap.Id}', CellId = '{cell.CellId}'");
+
+                                Console.WriteLine($"add Malt {graphical.Identifier} on {tempMap.Id} / {cell.CellId}");
+                            }
+                            else if (DatabaseManager.MilletIdentifier.Contains((uint)graphical.ElementId))
+                            {
+                                DatabaseManager.ExecuteNonQuery(
+                                    $"INSERT INTO map_interactives SET ElementId = '{graphical.Identifier}', ElementTypeId = '47', SkillId = '58', MapId = '{tempMap.Id}', CellId = '{cell.CellId}'");
+
+                                Console.WriteLine($"add Millet {graphical.Identifier} on {tempMap.Id} / {cell.CellId}");
+                            }
+                            else if (DatabaseManager.BambouSacreIdentifier.Contains((uint)graphical.ElementId))
+                            {
+                                DatabaseManager.ExecuteNonQuery(
+                                    $"INSERT INTO map_interactives SET ElementId = '{graphical.Identifier}', ElementTypeId = '110', SkillId = '158', MapId = '{tempMap.Id}', CellId = '{cell.CellId}'");
+
+                                Console.WriteLine($"add Bambou Sacrée {graphical.Identifier} on {tempMap.Id} / {cell.CellId}");
+                            }
+                            else if (DatabaseManager.BambouSombreIdentifier.Contains((uint)graphical.ElementId))
+                            {
+                                DatabaseManager.ExecuteNonQuery(
+                                    $"INSERT INTO map_interactives SET ElementId = '{graphical.Identifier}', ElementTypeId = '109', SkillId = '155', MapId = '{tempMap.Id}', CellId = '{cell.CellId}'");
+
+                                Console.WriteLine($"add Bambou Sombre {graphical.Identifier} on {tempMap.Id} / {cell.CellId}");
+                            }
+                            else if (DatabaseManager.EdelweissIdentifier.Contains((uint)graphical.ElementId))
+                            {
+                                DatabaseManager.ExecuteNonQuery(
+                                    $"INSERT INTO map_interactives SET ElementId = '{graphical.Identifier}', ElementTypeId = '61', SkillId = '54', MapId = '{tempMap.Id}', CellId = '{cell.CellId}'");
+
+                                Console.WriteLine($"add Edelweiss {graphical.Identifier} on {tempMap.Id} / {cell.CellId}");
+                            }
+                            else if (DatabaseManager.OrchideeIdentifier.Contains((uint)graphical.ElementId))
+                            {
+                                DatabaseManager.ExecuteNonQuery(
+                                    $"INSERT INTO map_interactives SET ElementId = '{graphical.Identifier}', ElementTypeId = '68', SkillId = '73', MapId = '{tempMap.Id}', CellId = '{cell.CellId}'");
+
+                                Console.WriteLine($"add Orchidée Freyesque {graphical.Identifier} on {tempMap.Id} / {cell.CellId}");
+                            }
+                            else if (DatabaseManager.MentheIdentifier.Contains((uint)graphical.ElementId))
+                            {
+                                DatabaseManager.ExecuteNonQuery(
+                                    $"INSERT INTO map_interactives SET ElementId = '{graphical.Identifier}', ElementTypeId = '66', SkillId = '72', MapId = '{tempMap.Id}', CellId = '{cell.CellId}'");
+
+                                Console.WriteLine($"add Menthe Sauvage {graphical.Identifier} on {tempMap.Id} / {cell.CellId}");
+                            }
+                            else if (DatabaseManager.CobaltIdentifier.Contains((uint)graphical.ElementId))
+                            {
+                                DatabaseManager.ExecuteNonQuery(
+                                    $"INSERT INTO map_interactives SET ElementId = '{graphical.Identifier}', ElementTypeId = '37', SkillId = '28', MapId = '{tempMap.Id}', CellId = '{cell.CellId}'");
+
+                                Console.WriteLine($"add Cobalt {graphical.Identifier} on {tempMap.Id} / {cell.CellId}");
                             }
                         }
                     }
                 }
-
-                //Console.WriteLine($"({Constants.MapCounter++}) Map -> {data.MapId} successfuly imported.");
             }
         }
     }

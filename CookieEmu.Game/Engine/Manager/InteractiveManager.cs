@@ -25,20 +25,17 @@ namespace CookieEmu.Game.Engine.Manager
             }
             if (interactives.Count > 0)
             {
-                var tempList = new List<InteractiveElement>();
-                foreach (var elem in interactives)
-                {
-                    tempList.Add(new InteractiveElementWithAgeBonus
+                return interactives.Select(elem => new InteractiveElementWithAgeBonus
                     {
                         ElementId = elem.ElementId,
                         ElementTypeId = elem.ElementTypeId,
                         AgeBonus = 200,
                         DisabledSkills = new List<InteractiveElementSkill>(),
-                        EnabledSkills = new List<InteractiveElementSkill> { new InteractiveElementSkill((uint) elem.SkillId, NextUid())},
+                        EnabledSkills = new List<InteractiveElementSkill> {new InteractiveElementSkill((uint) elem.SkillId, NextUid())},
                         OnCurrentMap = true
-                    });
-                }
-                return tempList;
+                    })
+                    .Cast<InteractiveElement>()
+                    .ToList();
             }
             return new List<InteractiveElement>();
         }

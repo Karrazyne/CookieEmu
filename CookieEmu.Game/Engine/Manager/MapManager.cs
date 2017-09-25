@@ -46,9 +46,7 @@ namespace CookieEmu.Game.Engine.Manager
         public static List<GameRolePlayActorInformations> GetActorInformationses(int mapId)
         {
             var toRet = new List<GameRolePlayActorInformations>();
-            if (!MapInstance.ContainsKey(mapId))
-                return toRet;
-            return MapInstance[mapId].GetGameRolePlayActorInformationses();
+            return !MapInstance.ContainsKey(mapId) ? toRet : MapInstance[mapId].GetGameRolePlayActorInformationses();
         }
     }
 }

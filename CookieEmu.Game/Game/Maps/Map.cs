@@ -15,6 +15,8 @@ namespace CookieEmu.Game.Game.Maps
 
         private readonly List<Client> _clients;
 
+        private readonly List<GameRolePlayGroupMonsterInformations> _monsters = new List<GameRolePlayGroupMonsterInformations>();
+
         public int Id => Record.MapId;
 
         public int RelativeId => Record.RelativeId;
@@ -75,10 +77,13 @@ namespace CookieEmu.Game.Game.Maps
         public List<GameRolePlayActorInformations> GetGameRolePlayActorInformationses()
         {
             var toRet = new List<GameRolePlayActorInformations>();
-            foreach (var client in _clients)
+            while (_monsters.Count < 3)
             {
-                toRet.Add(client.Character.GetGameRolePlayCharacterInformations());
+                var m = MonsterManager.GetGameRolePlayGroupMonsterInformations(SubAreaId);
+                _monsters.Add(m);
             }
+            toRet.AddRange(_monsters);
+
             return toRet;
         }
 

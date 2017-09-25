@@ -79,7 +79,7 @@ namespace CookieEmu.Game.Engine.Handler.Context
         {
             client.Character.MapId = message.MapId;
             client.SendAsync(new MapComplementaryInformationsDataMessage((ushort) client.CurrentMap.SubAreaId,
-                message.MapId, new List<HouseInformations>(), new List<GameRolePlayActorInformations>(), 
+                message.MapId, new List<HouseInformations>(), client.CurrentMap.GetGameRolePlayActorInformationses(), 
                 InteractiveManager.GetInteractives(message.MapId), InteractiveManager.GetStatedElements(message.MapId),
                 new List<MapObstacle>(), new List<FightCommonInformations>(), false,
                 new FightStartingPositions(client.CurrentMap.BluePlacement, client.CurrentMap.RedPlacement)));

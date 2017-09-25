@@ -17,14 +17,16 @@ namespace D2OSync
         static void Main(string[] args)
         {
             FastD2IReader.Instance.Init(@"D:\Dofus 2.43\app\data\i18n\i18n_fr.d2i");
-            DatabaseManager.Connect("127.0.0.1", "root", "", "test");
+            DatabaseManager.Connect("127.0.0.1", "root", "", "cookieemu");
             //GenerateTitle();
             //GenerateBreed();
             //GenerateHead();
             //GenerateInteractive();
             //GenerateJob();
-            GenerateSkills();
+            //GenerateSkills();
             //GenerateSkillName();
+
+            GenerateMonster();
 
             Console.WriteLine("done");
             Console.Read();
@@ -116,6 +118,13 @@ namespace D2OSync
             {
                 Console.WriteLine(FastD2IReader.Instance.GetText(name.NameId));
             }
+        }
+
+        private static void GenerateMonster()
+        {
+            var data = new D2oReader(@"D:\Dofus 2.43\app\data\common\Monsters.d2o");
+            var monsters = data.ReadObjects<Monster>();
+            var tempMoonster = monsters.Values.Select(x => new MonsterModel(x)).ToList();
         }
     }
  }

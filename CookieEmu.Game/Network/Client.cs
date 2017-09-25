@@ -9,6 +9,7 @@ using CookieEmu.API.Protocol;
 using CookieEmu.API.Protocol.Network.Messages.Game.Approach;
 using CookieEmu.API.Protocol.Network.Messages.Handshake;
 using CookieEmu.Common.Console;
+using CookieEmu.Game.Engine.Manager;
 using CookieEmu.Game.Engine.Types;
 using CookieEmu.Game.Game.Maps;
 using CookieEmu.Game.SQL.Account;
@@ -26,9 +27,7 @@ namespace CookieEmu.Game.Network
         public Character Character { get; set; }
         public Map CurrentMap { get; set; }
 
-        private MessageInformations MessageParser { get; set; }
-
-        private readonly Random _random = new Random();
+        private MessageInformations MessageParser { get; }
 
         public Client(Socket s)
         {
@@ -76,6 +75,7 @@ namespace CookieEmu.Game.Network
         {
             await Task.Delay(1000);
             GameServer.Clients.Remove(this);
+            CurrentMap.RemoveClient(this);
             Logger.Write($"Client {Ip}:{Port} leave...");
             ClientSocket.Shutdown(SocketShutdown.Both);
             ClientSocket.Close();
