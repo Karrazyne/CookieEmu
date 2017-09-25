@@ -24,13 +24,11 @@ namespace CookieEmu.Auth.Engine.Handler
         [MessageHandler(typeof (IdentificationMessage))]
         public static void HandleIdentificationMessage(IdentificationMessage message, Client client)
         {
-            //TODO
-            // Gérer le login ^_^
-            if (message.Version.ToString() != "2.43.3.285950.0.0.1.1")
+            if (message.Version.ToString() != "2.43.5.179283633.0.0.1.1")
             {
                 var messageToSend =
                     new IdentificationFailedForBadVersionMessage(
-                        new API.Protocol.Network.Types.Version.Version(2, 43, 3, 285950, 0, 0));
+                        new API.Protocol.Network.Types.Version.Version(2, 43, 5, 179283633, 0, 0));
                 client.SendAsync(messageToSend);
                 return;
             }
